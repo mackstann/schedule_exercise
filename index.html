@@ -3,8 +3,41 @@
     <head>
         <meta charset="UTF-8">
         <title>Interview Schedule-a-ma-tron 9,000,000™</title>
+
+        <style>
+            * { font-family: Helvetica, sans-serif; }
+        </style>
+
+        <script>
+            function init() {
+                const api = 'http://localhost:5000';
+
+                fetch(api + '/employer_schedules')
+                    .then((resp) => resp.json())
+                    .then((timeSlots) => {
+                        const schedDiv = document.querySelector('#schedule')
+                        const timeSlotsList = document.querySelector('#timeslots')
+
+                        timeSlots.forEach((slot) => {
+                            const d = (new Date(Date.parse(slot['start_time'])))
+                            const text = 'Time slot #' + slot['id'] + ' - begins at ' +
+                                d.toDateString() + ' ' + d.toTimeString()
+                            const li = document.createElement('li')
+                            li.appendChild(document.createTextNode(text))
+
+                            timeSlotsList.appendChild(li)
+                        });
+                    }
+                );
+            }
+            window.addEventListener('DOMContentLoaded', init, false);
+        </script>
     </head>
 
     <body>
+        <div id="schedule">
+            <ul id="timeslots">
+            </ul>
+        </div>
     </body>
 </html>
