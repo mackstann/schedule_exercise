@@ -6,6 +6,12 @@
 
         <style>
             * { font-family: Helvetica, sans-serif; }
+            #alert {
+                background: #afa;
+                padding: 5px;
+                font-size: small;
+                display: none;
+            }
         </style>
 
         <script>
@@ -15,16 +21,34 @@
                 fetch(api + '/employer_schedules')
                     .then((resp) => resp.json())
                     .then((timeSlots) => {
-                        const schedDiv = document.querySelector('#schedule')
                         const timeSlotsList = document.querySelector('#timeslots')
+                        const alert = document.querySelector('#alert')
 
                         timeSlots.forEach((slot) => {
-                            const d = (new Date(Date.parse(slot['start_time'])))
-                            const text = 'Time slot #' + slot['id'] + ' - begins at ' +
-                                d.toDateString() + ' ' + d.toTimeString()
-                            const li = document.createElement('li')
-                            li.appendChild(document.createTextNode(text))
+                            const time = (new Date(Date.parse(slot['start_time'])))
+                            const timeText = 'Time slot #' + slot['id'] + ' - begins at ' +
+                                time.toDateString() + ' ' + time.toTimeString()
 
+                            const link = document.createElement('a')
+                            link.href = 'javascript:void(0)'
+                            link.appendChild(document.createTextNode('Book this!'))
+                            link.onclick = () => {
+                                fetch(api + '/schedule_interview', {
+                                    method: 'POST',
+                                    headers: {'Content-Type': 'application/json'},
+                                    body: JSON.stringify({'id': slot['id']})
+                                })
+                                    .then(() => {
+                                        alert.style.display = 'block';
+                                        alert.innerText = 'Successfully booked interview: ' + timeText
+                                    })
+                            }
+
+
+                            const li = document.createElement('li')
+                            li.appendChild(link)
+                            li.appendChild(document.createTextNode(' '))
+                            li.appendChild(document.createTextNode(timeText))
                             timeSlotsList.appendChild(li)
                         });
                     }
@@ -38,6 +62,8 @@
         <div id="schedule">
             <ul id="timeslots">
             </ul>
+        </div>
+        <div id="alert">
         </div>
     </body>
 </html>
