@@ -1,14 +1,17 @@
-from flask import Flask, request, abort, url_for
+import pathlib
+
+from flask import Flask, request, abort, url_for, send_from_directory
 from flask.json import jsonify
 
 from . import data
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
-    # serve the template etc.
-    pass
+    thisdir = pathlib.Path(__file__).parent.absolute()
+
+    return send_from_directory(thisdir, 'index.html')
 
 @app.route('/employer_schedules', methods=['GET'])
 def employer_schedules():
