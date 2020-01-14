@@ -1,6 +1,6 @@
 import pathlib
 
-from flask import Flask, request, abort, url_for, send_from_directory
+from flask import Flask, request, send_from_directory
 from flask.json import jsonify
 
 from . import data
