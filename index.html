@@ -38,12 +38,26 @@
                                     headers: {'Content-Type': 'application/json'},
                                     body: JSON.stringify({'id': slot['id']})
                                 })
-                                    .then(() => {
-                                        alert.style.display = 'block';
-                                        alert.innerText = 'Successfully booked interview: ' + timeText
+                                    .then((resp) => {
+                                        if (resp.ok) {
+                                            alert.style.display = 'block';
+                                            alert.style.background = '#afa';
+                                            alert.innerText = 'The server abides! Successfully booked interview: ' + timeText
+
+                                            // compensate for lack of FE finesse with a gif
+                                            const im = document.createElement('img')
+                                            im.src = 'https://media.giphy.com/media/18pjPEqqIt2k8/giphy.gif'
+                                            alert.appendChild(document.createElement('br'))
+                                            alert.appendChild(document.createElement('br'))
+                                            alert.appendChild(im)
+                                        } else {
+                                            alert.style.display = 'block';
+                                            alert.style.background = '#faa';
+                                            alert.innerText = 'The server is displeased! Or maybe the internet is ' +
+                                                'broken. HTTP ' + resp.status
+                                        }
                                     })
                             }
-
 
                             const li = document.createElement('li')
                             li.appendChild(link)
